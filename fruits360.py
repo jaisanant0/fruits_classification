@@ -1,12 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
-# This Python 3 environment comes with many helpful analytics libraries installed
-# It is defined by the kaggle/python docker image: https://github.com/kaggle/docker-python
-# For example, here's several helpful packages to load in 
 import tensorflow as tf
 import keras
 from keras.preprocessing import image
@@ -15,18 +6,13 @@ from keras.models import Model
 from keras.layers import Flatten, Dense, GlobalAveragePooling2D, Dropout, Conv2D, MaxPooling2D
 import matplotlib.pyplot as plt 
 
-# Input data files are available in the "../input/" directory.
-# For example, running this (by clicking run or pressing Shift+Enter) will list the files in the input directory
+# input train and test path
 
 train_path = '../input/fruits-360_dataset/fruits-360/Training/'
 val_path = '../input/fruits-360_dataset/fruits-360/Test/'
-# Any results you write to the current directory are saved as output.
 
 
-# # Image Processing
-
-# In[ ]:
-
+# Image Processing
 
 train_datagen =  image.ImageDataGenerator(rescale = 1./255,
                                           shear_range = 0.2,
@@ -36,10 +22,7 @@ train_datagen =  image.ImageDataGenerator(rescale = 1./255,
 validation_datagen = image.ImageDataGenerator(rescale = 1./255)
 
 
-# ## Generators
-
-# In[ ]:
-
+# Generators
 
 train_generator = train_datagen.flow_from_directory(directory = train_path,
                                                     target_size = (50,50),
@@ -55,9 +38,7 @@ val_generator = train_datagen.flow_from_directory(directory = val_path,
                                                     class_mode='categorical',
                                                     shuffle = True)
 
-
-# In[ ]:
-
+# sequebtial model
 
 model = tf.keras.Sequential()
 
@@ -80,24 +61,14 @@ model.add(tf.keras.layers.Dense(95, activation='softmax'))
 print(model.summary())
 
 
-# # Compiling and fiting
-
-# In[ ]:
-
-
-with tf.device("/device:GPU:0") :
-    model.compile(loss='categorical_crossentropy',
+# Compiling and fiting
+model.compile(loss='categorical_crossentropy',
               optimizer=tf.keras.optimizers.SGD(lr=1e-4, momentum=0.9),
               metrics=['accuracy'])
-    history = model.fit_generator(train_generator,
+history = model.fit_generator(train_generator,
                               epochs=20,
                               validation_data = val_generator)
 
-
-# 
-# # Accuracy and loss
-
-# In[ ]:
 
 
 #training and validation accuracy
@@ -111,7 +82,8 @@ plt.xlabel('Epoch')
 plt.legend(['Train', 'Validation'], loc='upper left')
 plt.show()
 
-# Plot training & validation loss values
+# training & validation loss values
+
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
 plt.title('Model loss')
